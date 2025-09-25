@@ -15,6 +15,10 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate
 
+# Copy entrypoint script
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
@@ -31,4 +35,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3001/api/health || exit 1
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["./entrypoint.sh"]

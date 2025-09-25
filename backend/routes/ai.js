@@ -6,6 +6,25 @@ const redisService = require('../services/redis');
 
 const router = express.Router();
 
+// AI service status endpoint
+router.get('/status', asyncHandler(async (req, res) => {
+  const isRealAI = !azureOpenAI.useMock;
+  
+  res.json({
+    aiEnabled: isRealAI,
+    service: isRealAI ? 'Azure OpenAI' : 'Enhanced Mock AI',
+    message: isRealAI 
+      ? 'Real AI service is active and ready!'
+      : 'Using intelligent mock responses. Configure Azure OpenAI for real AI functionality.',
+    features: {
+      explanations: true,
+      practiceQuestions: true,
+      chat: true,
+      learningPaths: true
+    }
+  });
+}));
+
 // Generate personalized explanation
 router.post('/generate-explanation', [
   body('topic').trim().isLength({ min: 1 }),
@@ -296,33 +315,8 @@ router.post('/chat', [
 
   const { message, context = [] } = req.body;
 
-  // For now, provide a helpful response based on common patterns
-  let response = '';
-  
-  if (message.toLowerCase().includes('help') || message.toLowerCase().includes('how')) {
-    response = `I'm here to help you learn! I can:
-    
-    🧠 Explain complex topics in your preferred learning style
-    📝 Generate practice questions to test your knowledge
-    🎯 Create personalized learning paths based on your goals
-    📊 Track your progress and suggest improvements
-    
-    What would you like to learn about today?`;
-  } else if (message.toLowerCase().includes('explain')) {
-    response = `I'd be happy to explain that for you! To provide the best explanation, I'll adapt it to your learning style (${req.user.learningStyle}). 
-    
-    You can also use the "Generate Explanation" feature for more detailed, AI-powered explanations on any topic.`;
-  } else if (message.toLowerCase().includes('practice') || message.toLowerCase().includes('quiz')) {
-    response = `Great idea! Practice is key to learning. I can generate custom practice questions on any topic you're studying. 
-    
-    Use the "Generate Questions" feature to get personalized quizzes that match your skill level.`;
-  } else {
-    response = `That's an interesting question! I'm designed to help you learn more effectively. 
-    
-    Try asking me to explain a concept, generate practice questions, or create a learning path for a subject you want to master.
-    
-    I'll adapt everything to your learning style and track your progress along the way!`;
-  }
+  // Enhanced AI chat response with better contextual understanding
+  let response = generateIntelligentResponse(message, req.user.learningStyle, context);
 
   res.json({
     response,
@@ -330,5 +324,205 @@ router.post('/chat', [
     context: [...context, { role: 'user', message }, { role: 'assistant', message: response }]
   });
 }));
+
+function generateIntelligentResponse(message, learningStyle = 'visual', context = []) {
+  const lowerMessage = message.toLowerCase();
+  
+  // Subject detection
+  const subjects = {
+    math: ['math', 'algebra', 'geometry', 'calculus', 'equation', 'fraction', 'number', 'solve', 'calculate'],
+    science: ['science', 'biology', 'chemistry', 'physics', 'photosynthesis', 'gravity', 'molecule', 'atom'],
+    programming: ['programming', 'code', 'javascript', 'python', 'html', 'css', 'function', 'variable'],
+    language: ['english', 'grammar', 'writing', 'essay', 'literature', 'reading', 'vocabulary']
+  };
+  
+  let detectedSubject = null;
+  for (const [subject, keywords] of Object.entries(subjects)) {
+    if (keywords.some(keyword => lowerMessage.includes(keyword))) {
+      detectedSubject = subject;
+      break;
+    }
+  }
+
+  // Intent detection
+  if (lowerMessage.includes('help') || lowerMessage.includes('how')) {
+    return generateHelpResponse(detectedSubject, learningStyle);
+  }
+  
+  if (lowerMessage.includes('explain') || lowerMessage.includes('what is') || lowerMessage.includes('tell me about')) {
+    return generateExplanationResponse(message, detectedSubject, learningStyle);
+  }
+  
+  if (lowerMessage.includes('practice') || lowerMessage.includes('quiz') || lowerMessage.includes('test') || lowerMessage.includes('questions')) {
+    return generatePracticeResponse(detectedSubject, learningStyle);
+  }
+  
+  if (lowerMessage.includes('study') || lowerMessage.includes('learn')) {
+    return generateStudyResponse(detectedSubject, learningStyle);
+  }
+  
+  if (lowerMessage.includes('homework') || lowerMessage.includes('assignment')) {
+    return generateHomeworkResponse(detectedSubject, learningStyle);
+  }
+
+  // Greeting responses
+  if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+    return `Hello! I'm your AI tutor, ready to help you learn. As a ${learningStyle} learner, I'll tailor my explanations to your learning style. What would you like to explore today?`;
+  }
+
+  // Default contextual response
+  return generateContextualResponse(message, detectedSubject, learningStyle, context);
+}
+
+function generateHelpResponse(subject, learningStyle) {
+  const baseHelp = `I'm here to help you learn effectively! Here's what I can do:
+
+🧠 **Explain Concepts**: Get detailed explanations adapted to your ${learningStyle} learning style
+📝 **Practice Questions**: Generate quizzes and practice problems
+🎯 **Study Strategies**: Personalized learning approaches
+📚 **Homework Help**: Step-by-step problem solving guidance`;
+
+  if (subject) {
+    return `${baseHelp}
+
+Since you mentioned ${subject}, I can specifically help you with:
+• Core ${subject} concepts and principles
+• Problem-solving strategies for ${subject}
+• Practice questions and assessments
+• Study techniques tailored for ${subject}
+
+What specific ${subject} topic would you like to explore?`;
+  }
+
+  return `${baseHelp}
+
+What subject or topic would you like help with today?`;
+}
+
+function generateExplanationResponse(message, subject, learningStyle) {
+  const styleAdvice = {
+    visual: "with diagrams, visual examples, and step-by-step breakdowns",
+    auditory: "through verbal explanations, discussions, and logical reasoning",
+    kinesthetic: "using hands-on examples, real-world applications, and interactive approaches",
+    reading: "with detailed written explanations, structured information, and comprehensive analysis"
+  };
+
+  if (subject) {
+    return `I'd be happy to explain that ${subject} concept for you! As a ${learningStyle} learner, I'll explain it ${styleAdvice[learningStyle]}.
+
+To give you the best explanation, could you be more specific about what aspect you'd like me to explain? For example:
+• The basic definition and key principles
+• How it works step-by-step
+• Real-world applications and examples
+• How it connects to other concepts you've learned
+
+You can also use the "Explain" feature in the AI Tutor for more detailed explanations!`;
+  }
+
+  return `I'd love to explain that for you! As a ${learningStyle} learner, I'll make sure to present the information ${styleAdvice[learningStyle]}.
+
+Please let me know the specific topic or concept you'd like me to explain, and I'll provide a clear, engaging explanation tailored to your learning style.`;
+}
+
+function generatePracticeResponse(subject, learningStyle) {
+  if (subject) {
+    return `Excellent! Practice is crucial for mastering ${subject}. I can create practice questions that match your ${learningStyle} learning style.
+
+For ${subject} practice, I can generate:
+• Multiple choice questions to test understanding
+• Step-by-step problem solving exercises
+• Real-world application scenarios
+• Concept review questions
+
+Use the "Practice" feature to generate custom ${subject} questions, or tell me specifically what ${subject} topics you want to practice!`;
+  }
+
+  return `Great thinking! Practice is key to learning success. As a ${learningStyle} learner, I'll create practice questions that suit your learning style.
+
+What subject or topic would you like to practice? I can generate:
+• Custom quizzes and assessments
+• Problem-solving exercises
+• Review questions for concepts you've learned
+• Challenge problems to extend your understanding
+
+Just let me know the topic and I'll create engaging practice questions for you!`;
+}
+
+function generateStudyResponse(subject, learningStyle) {
+  const studyTips = {
+    visual: "Create mind maps, diagrams, and visual summaries. Use colors and charts to organize information.",
+    auditory: "Read aloud, discuss concepts with others, and use rhythm or music to remember information.",
+    kinesthetic: "Take breaks for movement, use hands-on activities, and study in different locations.",
+    reading: "Take detailed notes, create outlines, and rewrite concepts in your own words."
+  };
+
+  if (subject) {
+    return `Here are some effective study strategies for ${subject}, tailored to your ${learningStyle} learning style:
+
+**${learningStyle.charAt(0).toUpperCase() + learningStyle.slice(1)} Learning Tips for ${subject.charAt(0).toUpperCase() + subject.slice(1)}:**
+${studyTips[learningStyle]}
+
+**General ${subject} Study Approach:**
+1. Start with core concepts and build understanding gradually
+2. Practice regularly with different types of problems
+3. Connect new information to what you already know
+4. Test your understanding with practice questions
+
+Would you like me to create a specific study plan or practice questions for ${subject}?`;
+  }
+
+  return `I'd love to help you develop effective study strategies! As a ${learningStyle} learner, here's what works best for you:
+
+**Your Learning Style (${learningStyle.charAt(0).toUpperCase() + learningStyle.slice(1)}) Study Tips:**
+${studyTips[learningStyle]}
+
+What subject are you studying? I can provide more specific study strategies and even create a personalized learning path for you!`;
+}
+
+function generateHomeworkResponse(subject, learningStyle) {
+  if (subject) {
+    return `I'm here to help you with your ${subject} homework! As a ${learningStyle} learner, I'll guide you through problems step-by-step without just giving you the answers.
+
+Here's how I can help:
+• Break down complex problems into manageable steps
+• Explain concepts you're struggling with
+• Provide similar practice problems
+• Help you check your understanding
+
+What specific ${subject} homework problem or concept are you working on? Share the problem and I'll help you work through it!`;
+  }
+
+  return `I'm ready to help with your homework! I'll guide you through problems step-by-step and help you understand the concepts, rather than just giving you answers.
+
+What subject is your homework in? Once you tell me:
+• Share the specific problem or topic you're working on
+• I'll help break it down into manageable steps
+• We'll work through it together so you truly understand
+• I'll provide additional practice if needed
+
+Remember, the goal is learning and understanding, not just getting the right answer!`;
+}
+
+function generateContextualResponse(message, subject, learningStyle, context) {
+  const recentContext = context.slice(-2); // Last 2 exchanges for context
+  
+  let response = `I understand you're asking about "${message}". `;
+  
+  if (subject) {
+    response += `This seems related to ${subject}. `;
+  }
+  
+  response += `As a ${learningStyle} learner, I want to make sure I explain this in the most effective way for you.
+
+Could you help me understand exactly what you'd like to know? For example:
+• Are you looking for an explanation of a concept?
+• Do you need help solving a specific problem?
+• Would you like practice questions on this topic?
+• Are you looking for study strategies?
+
+The more specific you can be, the better I can tailor my help to your learning needs!`;
+
+  return response;
+}
 
 module.exports = router;

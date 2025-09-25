@@ -308,8 +308,23 @@ docker-compose up --build
 
 # Access the application
 # Frontend: http://localhost:3000
-# Backend API: http://localhost:5000
+# Backend API: http://localhost:3001
 ```
+
+### 🎯 Demo Credentials
+
+**The application automatically seeds demo users when first started. Use these credentials to test different user roles:**
+
+| Role | Email | Password | Description |
+|------|-------|----------|-------------|
+| **Student** | `student@edumind.ai` | `password123` | Access to courses, AI tutoring, progress tracking |
+| **Teacher** | `teacher@edumind.ai` | `password123` | Course creation, student management, analytics |
+| **Admin** | `admin@edumind.ai` | `password123` | Full system access, user management |
+
+**🚀 Quick Demo Access:**
+- The login page includes convenient "Use Student", "Use Teacher", and "Use Admin" buttons
+- **Docker**: Database seeding happens automatically on first startup
+- **Local Development**: You must run `npm run db:seed` manually (see Local Development Setup below)
 
 ### Environment Configuration
 ```bash
@@ -326,17 +341,116 @@ AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name
 AZURE_OPENAI_API_VERSION=2024-02-15-preview
 ```
 
-### Development Mode
+### 🔧 Local Development Setup
+
+#### Option 1: Docker (Recommended - Automatic Seeding)
 ```bash
-# Backend development
+# Clone and navigate to project
+git clone https://github.com/Folexy13/edumindai.git
+cd EduMind-AI
+
+# Configure environment variables
+cp backend/.env.example backend/.env
+# Edit backend/.env with your Azure OpenAI credentials
+
+# Build and run with Docker Compose (includes automatic seeding)
+docker-compose up --build
+
+# ✅ Database seeding happens automatically!
+# Access the application:
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:3001
+```
+
+#### Option 2: Local Development (Manual Seeding Required)
+
+**🚨 Important: For local development, you MUST run database migrations and seeding manually!**
+
+```bash
+# Clone and navigate to project
+git clone https://github.com/Folexy13/edumindai.git
+cd EduMind-AI
+
+# Setup Backend
 cd backend
 npm install
-npm run dev
 
-# Frontend development (separate terminal)
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your database URL and Azure OpenAI credentials
+
+# Run database migrations
+npx prisma migrate dev --name init
+# Or if you prefer to push schema without migrations:
+npx prisma db push
+
+# Generate Prisma client
+npx prisma generate
+
+# 🌱 IMPORTANT: Seed the database with demo users
+npm run db:seed
+
+# Start backend server
+npm run dev
+# Backend will run on http://localhost:3001
+```
+
+```bash
+# Setup Frontend (in a new terminal)
 cd frontend
 npm install
+
+# Start frontend development server
 npm start
+# Frontend will run on http://localhost:3000
+```
+
+**🎯 Local Database Seeding Commands:**
+```bash
+# From the backend directory:
+npm run db:seed          # Seed demo users and courses
+npm run db:studio        # Open Prisma Studio to view data
+npx prisma db push       # Push schema changes
+npx prisma migrate dev   # Create and apply migration
+```
+
+### 🔧 Troubleshooting Local Setup
+
+#### Common Issues and Solutions:
+
+**🚨 "Cannot login with demo credentials"**
+```bash
+# Solution: Make sure you ran the seeding command
+cd backend
+npm run db:seed
+```
+
+**🚨 "Prisma Client not generated"**
+```bash
+# Solution: Generate the Prisma client
+cd backend
+npx prisma generate
+```
+
+**🚨 "Database connection error"**
+```bash
+# Solution: Check your DATABASE_URL in backend/.env
+# Make sure PostgreSQL is running (for local development)
+# Or use the provided database URL format
+```
+
+**🚨 "Module not found errors"**
+```bash
+# Solution: Install dependencies
+cd backend && npm install
+cd frontend && npm install
+```
+
+**🚨 "Port already in use"**
+```bash
+# Solution: Kill processes using ports 3000/3001
+# Windows: netstat -ano | findstr :3000
+# Mac/Linux: lsof -ti:3000 | xargs kill
 ```
 
 ---
