@@ -174,31 +174,70 @@ const AITutorPage = () => {
   };
 
   const formatMessage = (message) => {
-    if (message.feature === 'practice' && typeof message.content === 'object') {
-      return (
-        <div className="space-y-3">
-          <p className="font-medium">Here are some practice questions:</p>
-          {message.content.questions?.map((question, index) => (
-            <div key={index} className="p-3 bg-gray-50 rounded-lg">
-              <p className="font-medium text-gray-900 mb-2">
-                Question {index + 1}: {question.question}
-              </p>
-              {question.options && (
-                <ul className="space-y-1 text-sm text-gray-700">
-                  {question.options.map((option, optIndex) => (
-                    <li key={optIndex} className="ml-4">
-                      {String.fromCharCode(65 + optIndex)}) {option}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      );
+    if (typeof message.content === 'string') {
+      return message.content;
+    }
+
+    if (message.content && typeof message.content === 'object') {
+      if (Array.isArray(message.content)) {
+        return message.content
+          .map((item) => {
+            if (typeof item === 'string') return item;
+            if (item.question) return `Q: ${item.question}\nA: ${item.answer}`;
+            return JSON.stringify(item);
+          })
+          .join('\n\n');
+      }
+      return JSON.stringify(message.content, null, 2);
     }
 
     return message.content;
+  };
+
+  const formatAIContent = (content) => {
+    if (!content) return content;
+    
+    // Convert markdown-style formatting to JSX
+    return content
+      .split('\n')
+      .map((line, index) => {
+        // Handle headers
+        if (line.startsWith('### ')) {
+          return <h3 key={index} className="text-lg font-semibold mt-4 mb-2 text-gray-800">{line.replace('### ', '')}</h3>;
+        }
+        if (line.startsWith('#### ')) {
+          return <h4 key={index} className="text-base font-medium mt-3 mb-2 text-gray-700">{line.replace('#### ', '')}</h4>;
+        }
+        
+        // Handle bold text
+        if (line.includes('**')) {
+          const parts = line.split('**');
+          return <p key={index} className="mb-2">{
+            parts.map((part, i) => i % 2 === 1 ? <strong key={i}>{part}</strong> : part)
+          }</p>;
+        }
+        
+        // Handle code blocks
+        if (line.startsWith('```')) {
+          return <div key={index} className="bg-gray-800 text-green-400 p-3 rounded mt-2 mb-2 font-mono text-sm overflow-x-auto"></div>;
+        }
+        
+        // Handle bullet points
+        if (line.trim().startsWith('- ')) {
+          return <li key={index} className="ml-4 mb-1">{line.replace('- ', '')}</li>;
+        }
+        
+        // Handle numbered lists
+        if (/^\d+\./.test(line.trim())) {
+          return <li key={index} className="ml-4 mb-1">{line.replace(/^\d+\.\s*/, '')}</li>;
+        }
+        
+        // Regular paragraphs
+        if (line.trim() === '') return <br key={index} />;
+        if (line.trim().startsWith('---')) return <hr key={index} className="my-4" />;
+        
+        return <p key={index} className="mb-2">{line}</p>;
+      });
   };
 
   return (
@@ -270,7 +309,9 @@ const AITutorPage = () => {
                 aria-live="polite"
               >
                 <div className="text-sm whitespace-pre-wrap break-words">
-                  {typeof message.content === 'string'
+                  {message.type === 'ai' && typeof message.content === 'string' 
+                    ? formatAIContent(message.content)
+                    : typeof message.content === 'string'
                     ? message.content
                     : formatMessage(message)}
                 </div>

@@ -249,14 +249,7 @@ class AzureOpenAIService {
 
     // Create practice questions if requested
     if (topic.toLowerCase().includes('practice questions') || topic.toLowerCase().includes('quiz') || topic.toLowerCase().includes('test')) {
-      return {
-        explanation: this.generatePracticeQuestionExplanation(topic, difficulty, learningStyle),
-        topic,
-        difficulty,
-        learningStyle,
-        generatedAt: new Date().toISOString(),
-        isMock: true,
-      };
+      return this.generatePracticeQuestionExplanation(topic, difficulty, learningStyle);
     }
 
     // Find the best matching explanation
@@ -284,14 +277,7 @@ class AzureOpenAIService {
       explanation = this.generateContextualExplanation(topic, difficulty, learningStyle);
     }
 
-    return {
-      explanation,
-      topic,
-      difficulty,
-      learningStyle,
-      generatedAt: new Date().toISOString(),
-      isMock: true,
-    };
+    return explanation;
   }
 
   generatePracticeQuestionExplanation(topic, difficulty, learningStyle) {

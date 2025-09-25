@@ -1,6 +1,13 @@
 # EduMind AI - Intelligent Learning Platform
 
-## 🏆 Hackathon Project Overview
+## � Project Demo
+[![Demo Video](https://img.shields.io/badge/▶️-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/9Hu8nTc6r0M)
+
+**[🔗 View Project Demo](https://youtu.be/9Hu8nTc6r0M)**
+
+---
+
+## �🏆 Hackathon Project Overview
 
 **EduMind AI** is a comprehensive EdTech platform that leverages Azure OpenAI to deliver personalized, adaptive learning experiences. Built with accessibility-first principles and gamification mechanics, it creates an engaging environment for learners of all abilities.
 
