@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4F46E5" />
+    <meta
+      name="description"
+      content="EduMind AI - Intelligent Learning Platform with AI-powered tutoring, gamification, and accessibility features"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Accessibility improvements -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="EduMind AI Team">
+    <meta name="keywords" content="education, AI tutoring, accessibility, gamified learning, personalized education">
+    
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="EduMind AI - Intelligent Learning Platform">
+    <meta property="og:description" content="AI-powered education platform with personalized learning paths and accessibility features">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://edumind-ai.com">
+    
+    <!-- Skip link styles for accessibility -->
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        background: #000;
+        color: #fff;
+        padding: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        z-index: 10000;
+        border-radius: 0 0 4px 4px;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+    </style>
+    
+    <title>EduMind AI - Intelligent Learning Platform</title>
+  </head>
+  <body>
+    <noscript>
+      <div style="padding: 20px; text-align: center; background: #f9f9f9; border: 1px solid #ddd;">
+        <h1>JavaScript Required</h1>
+        <p>You need to enable JavaScript to run this application.</p>
+        <p>EduMind AI is a modern web application that requires JavaScript for full functionality.</p>
+        <p>Please enable JavaScript in your browser settings and reload this page.</p>
+      </div>
+    </noscript>
+    
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div id="root" role="main" aria-label="EduMind AI Application"></div>
+    
+    <!-- Accessibility announcements region -->
+    <div id="a11y-announcements" aria-live="polite" aria-atomic="true" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;"></div>
+  </body>
+</html>

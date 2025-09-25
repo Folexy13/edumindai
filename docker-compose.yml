@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: edumind-backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://edumind_user:edumind_password@postgres:5432/edumind_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - AZURE_OPENAI_DEPLOYMENT_NAME=${AZURE_OPENAI_DEPLOYMENT_NAME}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - edumind-network
+
+  frontend:
+    build: ./frontend
+    container_name: edumind-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:3001
+      - NODE_ENV=production
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - edumind-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: edumind-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=edumind_db
+      - POSTGRES_USER=edumind_user
+      - POSTGRES_PASSWORD=edumind_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - edumind-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: edumind-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - edumind-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  edumind-network:
+    driver: bridge

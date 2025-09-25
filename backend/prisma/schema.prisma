@@ -1,0 +1,314 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  username    String   @unique
+  firstName   String
+  lastName    String
+  password    String
+  role        Role     @default(STUDENT)
+  avatar      String?
+  bio         String?
+  grade       String?
+  school      String?
+  
+  // Learning preferences
+  learningStyle String?
+  difficulty    String   @default("beginner")
+  preferredLanguage String @default("en")
+  timezone      String?
+  
+  // Wellness tracking
+  moodEntries   MoodEntry[]
+  studySessions StudySession[]
+  
+  // Gamification
+  points        Int      @default(0)
+  level         Int      @default(1)
+  badges        Badge[]
+  achievements  Achievement[]
+  
+  // Course relationships
+  enrolledCourses CourseEnrollment[]
+  createdCourses  Course[] @relation("CourseCreator")
+  lessonProgress  LessonProgress[]
+  assessmentAttempts AssessmentAttempt[]
+  
+  // AI interactions
+  aiConversations AIConversation[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastActive  DateTime @default(now())
+  
+  @@map("users")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  thumbnail   String?
+  category    String
+  level       String   @default("beginner")
+  tags        String[]
+  estimatedHours Int    @default(0)
+  
+  // Content
+  lessons     Lesson[]
+  assessments Assessment[]
+  
+  // Relationships
+  creator     User     @relation("CourseCreator", fields: [creatorId], references: [id])
+  creatorId   String
+  enrollments CourseEnrollment[]
+  
+  // Status
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("courses")
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  type        LessonType @default(TEXT)
+  videoUrl    String?
+  duration    Int      @default(0) // in minutes
+  order       Int
+  
+  // Relationships
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  progress    LessonProgress[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("lessons")
+}
+
+model CourseEnrollment {
+  id          String   @id @default(cuid())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  progress    Float    @default(0) // 0-100
+  status      EnrollmentStatus @default(ACTIVE)
+  
+  enrolledAt  DateTime @default(now())
+  completedAt DateTime?
+  
+  @@unique([userId, courseId])
+  @@map("course_enrollments")
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String
+  
+  completed   Boolean  @default(false)
+  timeSpent   Int      @default(0) // in minutes
+  
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+model Assessment {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        AssessmentType @default(QUIZ)
+  questions   Json
+  passingScore Int     @default(70)
+  timeLimit   Int?    // in minutes
+  
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  
+  attempts    AssessmentAttempt[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("assessments")
+}
+
+model AssessmentAttempt {
+  id          String   @id @default(cuid())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  assessment  Assessment @relation(fields: [assessmentId], references: [id])
+  assessmentId String
+  
+  answers     Json
+  score       Float
+  passed      Boolean
+  timeSpent   Int      // in minutes
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("assessment_attempts")
+}
+
+model AIConversation {
+  id          String   @id @default(cuid())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  title       String
+  messages    Json
+  context     Json?    // Learning context, course info, etc.
+  type        ConversationType @default(TUTOR)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("ai_conversations")
+}
+
+model StudySession {
+  id          String   @id @default(cuid())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  subject     String
+  duration    Int      // in minutes
+  focusScore  Int?     // 1-10
+  notes       String?
+  
+  startTime   DateTime
+  endTime     DateTime?
+  createdAt   DateTime @default(now())
+  
+  @@map("study_sessions")
+}
+
+model MoodEntry {
+  id          String   @id @default(cuid())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  mood        Int      // 1-5 scale
+  energy      Int      // 1-5 scale
+  stress      Int      // 1-5 scale
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("mood_entries")
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  icon        String
+  category    BadgeCategory
+  condition   Json     // Conditions for earning the badge
+  
+  users       User[]
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("badges")
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  type        AchievementType
+  title       String
+  description String
+  points      Int
+  metadata    Json?    // Additional data like course completed, streak count, etc.
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("achievements")
+}
+
+// Enums
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum LessonType {
+  TEXT
+  VIDEO
+  INTERACTIVE
+  QUIZ
+  ASSIGNMENT
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  PAUSED
+  DROPPED
+}
+
+enum AssessmentType {
+  QUIZ
+  TEST
+  ASSIGNMENT
+  PROJECT
+}
+
+enum ConversationType {
+  TUTOR
+  HOMEWORK_HELP
+  CONCEPT_EXPLANATION
+  CAREER_GUIDANCE
+  GENERAL
+}
+
+enum BadgeCategory {
+  LEARNING
+  ENGAGEMENT
+  ACHIEVEMENT
+  SOCIAL
+  STREAK
+}
+
+enum AchievementType {
+  COURSE_COMPLETION
+  LESSON_STREAK
+  PERFECT_SCORE
+  TIME_MILESTONE
+  ENGAGEMENT
+  SOCIAL
+}

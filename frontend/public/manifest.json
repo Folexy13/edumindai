@@ -1,0 +1,17 @@
+{
+  "short_name": "EduMind AI",
+  "name": "EduMind AI - Intelligent Learning Platform",
+  "description": "AI-powered education platform with personalized learning paths and accessibility features",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4F46E5",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary"
+}
