@@ -16,6 +16,9 @@ import {
   MoonIcon,
   SpeakerWaveIcon,
   SpeakerXMarkIcon,
+  UsersIcon,
+  DocumentTextIcon,
+  CogIcon,
 } from '@heroicons/react/24/outline';
 
 const Layout = ({ children }) => {
@@ -26,13 +29,46 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-    { name: 'Courses', href: '/courses', icon: BookOpenIcon },
-    { name: 'AI Tutor', href: '/ai-tutor', icon: AcademicCapIcon },
-    { name: 'Progress', href: '/progress', icon: ChartBarIcon },
-    { name: 'Profile', href: '/profile', icon: UserCircleIcon },
-  ];
+  // Role-based navigation
+  const getNavigationForRole = (userRole) => {
+    const baseNavigation = [
+      { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+      { name: 'Profile', href: '/profile', icon: UserCircleIcon },
+    ];
+
+    switch (userRole) {
+      case 'STUDENT':
+        return [
+          ...baseNavigation.slice(0, 1), // Dashboard
+          { name: 'My Courses', href: '/courses', icon: BookOpenIcon },
+          { name: 'AI Tutor', href: '/ai-tutor', icon: AcademicCapIcon },
+          { name: 'Progress', href: '/progress', icon: ChartBarIcon },
+          ...baseNavigation.slice(1), // Profile
+        ];
+      case 'TEACHER':
+        return [
+          ...baseNavigation.slice(0, 1), // Dashboard
+          { name: 'My Courses', href: '/courses', icon: BookOpenIcon },
+          { name: 'Create Course', href: '/courses/create', icon: DocumentTextIcon },
+          { name: 'Students', href: '/students', icon: UsersIcon },
+          { name: 'Analytics', href: '/progress', icon: ChartBarIcon },
+          ...baseNavigation.slice(1), // Profile
+        ];
+      case 'ADMIN':
+        return [
+          ...baseNavigation.slice(0, 1), // Dashboard
+          { name: 'All Courses', href: '/courses', icon: BookOpenIcon },
+          { name: 'Users Management', href: '/users', icon: UsersIcon },
+          { name: 'Analytics', href: '/progress', icon: ChartBarIcon },
+          { name: 'System Settings', href: '/settings', icon: CogIcon },
+          ...baseNavigation.slice(1), // Profile
+        ];
+      default:
+        return baseNavigation;
+    }
+  };
+
+  const navigation = getNavigationForRole(user?.role);
 
   const handleLogout = async () => {
     await logout();

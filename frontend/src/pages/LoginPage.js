@@ -31,7 +31,7 @@ const LoginPage = () => {
       const result = await login(data.email, data.password);
       
       if (result.success) {
-        announce(`Welcome back, ${result.user.name}!`);
+        announce(`Welcome back, ${result.user.firstName}!`);
         navigate(from, { replace: true });
       } else {
         setError('root', { message: result.error });

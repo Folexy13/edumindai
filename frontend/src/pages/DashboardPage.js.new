@@ -39,3 +39,4 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+      {/* Welcome section */}

@@ -60,7 +60,7 @@ const api = {
     register: (userData) => apiClient.post('/api/auth/register', userData),
     login: (credentials) => apiClient.post('/api/auth/login', credentials),
     logout: () => apiClient.post('/api/auth/logout'),
-    getMe: () => apiClient.get('/api/auth/me'),
+    getMe: () => apiClient.get('/api/auth/profile'),
   },
 
   // AI endpoints

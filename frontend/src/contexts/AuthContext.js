@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       setUser(userData);
       
-      toast.success(`Welcome back, ${userData.name}!`);
+      toast.success(`Welcome back, ${userData.firstName}!`);
       return { success: true, user: userData };
     } catch (error) {
       const message = error.response?.data?.message || 'Login failed';
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       setUser(newUser);
       
-      toast.success(`Welcome to EduMind AI, ${newUser.name}!`);
+      toast.success(`Welcome to EduMind AI, ${newUser.firstName}!`);
       return { success: true, user: newUser };
     } catch (error) {
       const message = error.response?.data?.message || 'Registration failed';
