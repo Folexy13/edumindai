@@ -29,7 +29,9 @@ const RegisterPage = () => {
     
     try {
       const result = await registerUser({
-        name: data.name,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username: data.username,
         email: data.email,
         password: data.password,
         learningStyle: data.learningStyle,
@@ -37,7 +39,7 @@ const RegisterPage = () => {
       });
       
       if (result.success) {
-        announce(`Welcome to EduMind AI, ${result.user.name}!`);
+        announce(`Welcome to EduMind AI, ${result.user.firstName}!`);
         navigate('/dashboard');
       } else {
         setError('root', { message: result.error });
@@ -74,29 +76,92 @@ const RegisterPage = () => {
 
         <div className="bg-white py-8 px-6 shadow-lg rounded-lg">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            {/* Name field */}
+            {/* First Name field */}
             <div>
-              <label htmlFor="name" className="form-label">
-                Full Name
+              <label htmlFor="firstName" className="form-label">
+                First Name
               </label>
               <input
-                id="name"
+                id="firstName"
                 type="text"
-                autoComplete="name"
-                className={`form-input ${errors.name ? 'border-red-500' : ''}`}
-                placeholder="Enter your full name"
-                {...register('name', {
-                  required: 'Name is required',
+                autoComplete="given-name"
+                className={`form-input ${errors.firstName ? 'border-red-500' : ''}`}
+                placeholder="Enter your first name"
+                {...register('firstName', {
+                  required: 'First name is required',
                   minLength: {
-                    value: 2,
-                    message: 'Name must be at least 2 characters'
+                    value: 1,
+                    message: 'First name is required'
                   }
                 })}
-                aria-describedby={errors.name ? "name-error" : undefined}
+                aria-describedby={errors.firstName ? "firstName-error" : undefined}
               />
-              {errors.name && (
-                <p id="name-error" className="form-error" role="alert">
-                  {errors.name.message}
+              {errors.firstName && (
+                <p id="firstName-error" className="form-error" role="alert">
+                  {errors.firstName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Last Name field */}
+            <div>
+              <label htmlFor="lastName" className="form-label">
+                Last Name
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                autoComplete="family-name"
+                className={`form-input ${errors.lastName ? 'border-red-500' : ''}`}
+                placeholder="Enter your last name"
+                {...register('lastName', {
+                  required: 'Last name is required',
+                  minLength: {
+                    value: 1,
+                    message: 'Last name is required'
+                  }
+                })}
+                aria-describedby={errors.lastName ? "lastName-error" : undefined}
+              />
+              {errors.lastName && (
+                <p id="lastName-error" className="form-error" role="alert">
+                  {errors.lastName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Username field */}
+            <div>
+              <label htmlFor="username" className="form-label">
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                autoComplete="username"
+                className={`form-input ${errors.username ? 'border-red-500' : ''}`}
+                placeholder="Choose a unique username"
+                {...register('username', {
+                  required: 'Username is required',
+                  minLength: {
+                    value: 3,
+                    message: 'Username must be at least 3 characters'
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9_]+$/,
+                    message: 'Username can only contain letters, numbers, and underscores'
+                  }
+                })}
+                aria-describedby={errors.username ? "username-error" : "username-help"}
+              />
+              {errors.username && (
+                <p id="username-error" className="form-error" role="alert">
+                  {errors.username.message}
+                </p>
+              )}
+              {!errors.username && (
+                <p id="username-help" className="form-help">
+                  Username must be at least 3 characters long and can only contain letters, numbers, and underscores
                 </p>
               )}
             </div>

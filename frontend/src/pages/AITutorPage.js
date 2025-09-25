@@ -323,7 +323,7 @@ const AITutorPage = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 disabled={isLoading}
-                className="input"
+                className="input border-0 w-full "
                 aria-describedby="message-help"
               />
               <p id="message-help" className="sr-only">
