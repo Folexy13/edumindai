@@ -20,7 +20,8 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setError
+    setError,
+    setValue
   } = useForm();
 
   const onSubmit = async (data) => {
@@ -63,6 +64,59 @@ const LoginPage = () => {
               Create one now
             </Link>
           </p>
+          
+          {/* Demo Credentials */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 className="text-sm font-medium text-blue-800 mb-2">
+              🎯 Demo Credentials (Use these to test the application)
+            </h3>
+            <div className="space-y-2 text-xs text-blue-700">
+              <div className="flex justify-between">
+                <span className="font-medium">Student:</span>
+                <span>student@edumind.ai / password123</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Teacher:</span>
+                <span>teacher@edumind.ai / password123</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Admin:</span>
+                <span>admin@edumind.ai / password123</span>
+              </div>
+            </div>
+            <div className="mt-2 flex space-x-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('email', 'student@edumind.ai');
+                  setValue('password', 'password123');
+                }}
+                className="px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 rounded"
+              >
+                Use Student
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('email', 'teacher@edumind.ai');
+                  setValue('password', 'password123');
+                }}
+                className="px-2 py-1 text-xs bg-green-100 hover:bg-green-200 text-green-800 rounded"
+              >
+                Use Teacher
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setValue('email', 'admin@edumind.ai');
+                  setValue('password', 'password123');
+                }}
+                className="px-2 py-1 text-xs bg-purple-100 hover:bg-purple-200 text-purple-800 rounded"
+              >
+                Use Admin
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="bg-white py-8 px-6 shadow-lg rounded-lg">

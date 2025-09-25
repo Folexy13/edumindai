@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
 import api from '../services/api';
 import {
   UserIcon,
-  CogIcon,
   BellIcon,
   EyeIcon,
-  PaletteIcon,
-  LanguageIcon,
   ShieldCheckIcon,
   AcademicCapIcon,
 } from '@heroicons/react/24/outline';

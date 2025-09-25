@@ -15,8 +15,7 @@ import LearningPage from './pages/LearningPage';
 import ProgressPage from './pages/ProgressPage';
 import ProfilePage from './pages/ProfilePage';
 import AITutorPage from './pages/AITutorPage';
-import ProtectedRoute from './components/UI/ProtectedRoute';
-import LoadingSpinner from './components/UI/LoadingSpinner';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
 import ErrorBoundary from './components/UI/ErrorBoundary';
 
 function App() {

@@ -57,49 +57,49 @@ const api = {
 
   // Authentication endpoints
   auth: {
-    register: (userData) => apiClient.post('/auth/register', userData),
-    login: (credentials) => apiClient.post('/auth/login', credentials),
-    logout: () => apiClient.post('/auth/logout'),
-    getMe: () => apiClient.get('/auth/me'),
+    register: (userData) => apiClient.post('/api/auth/register', userData),
+    login: (credentials) => apiClient.post('/api/auth/login', credentials),
+    logout: () => apiClient.post('/api/auth/logout'),
+    getMe: () => apiClient.get('/api/auth/me'),
   },
 
   // AI endpoints
   ai: {
-    generateExplanation: (data) => apiClient.post('/ai/generate-explanation', data),
-    generateQuestions: (data) => apiClient.post('/ai/generate-questions', data),
-    generateLearningPath: (data) => apiClient.post('/ai/generate-learning-path', data),
-    submitQuiz: (data) => apiClient.post('/ai/submit-quiz', data),
-    chat: (data) => apiClient.post('/ai/chat', data),
+    generateExplanation: (data) => apiClient.post('/api/ai/generate-explanation', data),
+    generateQuestions: (data) => apiClient.post('/api/ai/generate-questions', data),
+    generateLearningPath: (data) => apiClient.post('/api/ai/generate-learning-path', data),
+    submitQuiz: (data) => apiClient.post('/api/ai/submit-quiz', data),
+    chat: (data) => apiClient.post('/api/ai/chat', data),
   },
 
   // Learning endpoints
   learning: {
-    getCourses: (params) => apiClient.get('/learning/courses', { params }),
-    getCourse: (courseId) => apiClient.get(`/learning/courses/${courseId}`),
-    enrollCourse: (courseId) => apiClient.post(`/learning/courses/${courseId}/enroll`),
+    getCourses: (params) => apiClient.get('/api/learning/courses', { params }),
+    getCourse: (courseId) => apiClient.get(`/api/learning/courses/${courseId}`),
+    enrollCourse: (courseId) => apiClient.post(`/api/learning/courses/${courseId}/enroll`),
     completeModule: (courseId, moduleId) => 
-      apiClient.post(`/learning/courses/${courseId}/modules/${moduleId}/complete`),
-    getMyCourses: () => apiClient.get('/learning/my-courses'),
-    getRecommendations: () => apiClient.get('/learning/recommendations'),
+      apiClient.post(`/api/learning/courses/${courseId}/modules/${moduleId}/complete`),
+    getMyCourses: () => apiClient.get('/api/learning/my-courses'),
+    getRecommendations: () => apiClient.get('/api/learning/recommendations'),
   },
 
   // Gamification endpoints
   gamification: {
-    getAchievements: () => apiClient.get('/gamification/achievements'),
-    getLeaderboard: (params) => apiClient.get('/gamification/leaderboard', { params }),
-    getProgress: () => apiClient.get('/gamification/progress'),
-    awardXP: (data) => apiClient.post('/gamification/award-xp', data),
-    getChallenges: () => apiClient.get('/gamification/challenges'),
+    getAchievements: () => apiClient.get('/api/gamification/achievements'),
+    getLeaderboard: (params) => apiClient.get('/api/gamification/leaderboard', { params }),
+    getProgress: () => apiClient.get('/api/gamification/progress'),
+    awardXP: (data) => apiClient.post('/api/gamification/award-xp', data),
+    getChallenges: () => apiClient.get('/api/gamification/challenges'),
   },
 
   // User endpoints
   user: {
-    getProfile: () => apiClient.get('/user/profile'),
-    updatePreferences: (preferences) => apiClient.put('/user/preferences', preferences),
-    getAnalytics: (params) => apiClient.get('/user/analytics', { params }),
-    setGoals: (goals) => apiClient.post('/user/goals', goals),
-    getGoals: () => apiClient.get('/user/goals'),
-    updateMood: (mood) => apiClient.post('/user/mood', mood),
+    getProfile: () => apiClient.get('/api/user/profile'),
+    updatePreferences: (preferences) => apiClient.put('/api/user/preferences', preferences),
+    getAnalytics: (params) => apiClient.get('/api/user/analytics', { params }),
+    setGoals: (goals) => apiClient.post('/api/user/goals', goals),
+    getGoals: () => apiClient.get('/api/user/goals'),
+    updateMood: (mood) => apiClient.post('/api/user/mood', mood),
     getWellness: () => apiClient.get('/user/wellness'),
   },
 

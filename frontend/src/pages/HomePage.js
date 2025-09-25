@@ -101,14 +101,14 @@ const HomePage = () => {
         <div className="relative">
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gray-100" />
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
+            <div className="relativemt-15  sm:rounded-2xl sm:overflow-hidden">
               <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-secondary-600 mix-blend-multiply" />
               </div>
               
-              <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
+              <div className="relative  px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
                 <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-                  <span className="block text-white">Learn Smarter with</span>
+                  <span className="block text-white ">Learn Smarter with</span>
                   <span className="block text-yellow-300">AI-Powered Education</span>
                 </h1>
                 
@@ -240,7 +240,7 @@ const HomePage = () => {
           </div>
           <div className="mt-8 md:mt-0 md:order-1">
             <p className="text-center text-base text-gray-400">
-              &copy; 2024 EduMind AI. Built for VirtuHack - Empowering Education Through Innovation.
+              &copy; 2025 EduMind AI. Built for VirtuHack - Empowering Education Through Innovation.
             </p>
           </div>
         </div>

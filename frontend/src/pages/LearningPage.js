@@ -9,7 +9,6 @@ import {
   ChevronRightIcon,
   CheckCircleIcon,
   PlayIcon,
-  DocumentTextIcon,
   QuestionMarkCircleIcon,
   AcademicCapIcon,
 } from "@heroicons/react/24/outline";

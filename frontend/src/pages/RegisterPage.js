@@ -273,13 +273,21 @@ const RegisterPage = () => {
                 />
                 <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
                   I agree to the{' '}
-                  <a href="#" className="text-primary-600 hover:text-primary-500">
+                  <button
+                    type="button"
+                    className="text-primary-600 hover:text-primary-500 underline bg-transparent border-none p-0 cursor-pointer"
+                    onClick={() => window.open('/terms', '_blank')}
+                  >
                     Terms of Service
-                  </a>
+                  </button>
                   {' '}and{' '}
-                  <a href="#" className="text-primary-600 hover:text-primary-500">
+                  <button
+                    type="button"
+                    className="text-primary-600 hover:text-primary-500 underline bg-transparent border-none p-0 cursor-pointer"
+                    onClick={() => window.open('/privacy', '_blank')}
+                  >
                     Privacy Policy
-                  </a>
+                  </button>
                 </label>
               </div>
               {errors.terms && (
