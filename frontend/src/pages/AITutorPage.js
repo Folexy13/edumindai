@@ -259,9 +259,9 @@ const AITutorPage = () => {
               }`}
             >
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                className={`max-w-full lg:max-w-4xl px-4 py-3 rounded-lg ${
                   message.type === 'user'
-                    ? 'bg-primary-600 text-white'
+                    ? 'bg-primary-600 text-white max-w-xs lg:max-w-md'
                     : message.isError
                     ? 'bg-red-100 text-red-800 border border-red-200'
                     : 'bg-gray-100 text-gray-900'
@@ -269,7 +269,7 @@ const AITutorPage = () => {
                 role="log"
                 aria-live="polite"
               >
-                <div className="text-sm">
+                <div className="text-sm whitespace-pre-wrap break-words">
                   {typeof message.content === 'string'
                     ? message.content
                     : formatMessage(message)}
