@@ -15,6 +15,10 @@ import LearningPage from './pages/LearningPage';
 import ProgressPage from './pages/ProgressPage';
 import ProfilePage from './pages/ProfilePage';
 import AITutorPage from './pages/AITutorPage';
+import StudentsPage from './pages/StudentsPage';
+import UsersPage from './pages/UsersPage';
+import SettingsPage from './pages/SettingsPage';
+import CreateCoursePage from './pages/CreateCoursePage';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import ErrorBoundary from './components/UI/ErrorBoundary';
 
@@ -94,6 +98,38 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <ProfilePage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="/students" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <StudentsPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="/users" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <UsersPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="/settings" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <SettingsPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="/create-course" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <CreateCoursePage />
                       </Layout>
                     </ProtectedRoute>
                   } />

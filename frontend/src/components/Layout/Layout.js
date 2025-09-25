@@ -49,7 +49,7 @@ const Layout = ({ children }) => {
         return [
           ...baseNavigation.slice(0, 1), // Dashboard
           { name: 'My Courses', href: '/courses', icon: BookOpenIcon },
-          { name: 'Create Course', href: '/courses/create', icon: DocumentTextIcon },
+          { name: 'Create Course', href: '/create-course', icon: DocumentTextIcon },
           { name: 'Students', href: '/students', icon: UsersIcon },
           { name: 'Analytics', href: '/progress', icon: ChartBarIcon },
           ...baseNavigation.slice(1), // Profile

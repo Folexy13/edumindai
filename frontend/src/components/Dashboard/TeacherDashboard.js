@@ -17,10 +17,10 @@ const TeacherDashboard = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [myCourses, setMyCourses] = useState([]);
-  const [recentActivity, setRecentActivity] = useState([]);
 
   useEffect(() => {
     loadDashboardData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadDashboardData = async () => {
@@ -146,7 +146,7 @@ const TeacherDashboard = ({ user }) => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
-              to="/courses/create"
+              to="/create-course"
               className="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 transition-colors group"
             >
               <PlusIcon className="h-8 w-8 text-gray-400 group-hover:text-primary-500 mr-3" />

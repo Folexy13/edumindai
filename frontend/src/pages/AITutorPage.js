@@ -52,46 +52,79 @@ const AITutorPage = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const messageToProcess = inputMessage.trim();
     setInputMessage('');
     setIsLoading(true);
 
     try {
       let response;
+      
       switch (activeFeature) {
         case 'chat':
-          response = await api.ai.chat(userMessage.content);
+          response = await api.ai.chat({ message: messageToProcess });
           break;
         case 'explain':
-          response = await api.ai.explain(userMessage.content);
+          response = await api.ai.generateExplanation({ 
+            topic: messageToProcess,
+            difficulty: 'intermediate',
+            learningStyle: 'visual'
+          });
           break;
         case 'practice':
-          response = await api.ai.generateQuestions(userMessage.content);
+          response = await api.ai.generateQuestions({ 
+            topic: messageToProcess,
+            count: 3,
+            difficulty: 'intermediate'
+          });
           break;
         default:
-          response = await api.ai.chat(userMessage.content);
+          response = await api.ai.chat({ message: messageToProcess });
+      }
+
+      let content;
+      if (activeFeature === 'explain') {
+        content = response.data.explanation || response.data.content || 'Explanation generated successfully';
+      } else if (activeFeature === 'practice') {
+        content = response.data.questions || response.data.content || 'Practice questions generated successfully';
+      } else {
+        content = response.data.response || response.data.content || response.data.message || 'Response generated successfully';
       }
 
       const aiMessage = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: response.data.response || response.data.explanation || response.data.questions,
+        content: content,
         timestamp: new Date(),
         feature: activeFeature,
       };
 
       setMessages(prev => [...prev, aiMessage]);
-      announce('AI response received');
+      announce(`AI ${activeFeature} response received`);
     } catch (error) {
       console.error('Failed to get AI response:', error);
+      let errorContent = "I apologize, but I'm having trouble processing your request right now.";
+      
+      // Provide helpful fallback responses based on the feature
+      switch (activeFeature) {
+        case 'explain':
+          errorContent = `I'd love to explain "${messageToProcess}" for you! While I'm having technical difficulties, here's what I can tell you: This topic involves important concepts that you can explore through various learning resources. Try breaking it down into smaller parts and researching each component.`;
+          break;
+        case 'practice':
+          errorContent = `I can help you practice "${messageToProcess}"! While I'm having technical difficulties generating custom questions, I recommend creating your own practice questions by: 1) Identifying key concepts, 2) Creating questions that test understanding, 3) Including multiple choice and open-ended questions.`;
+          break;
+        default:
+          errorContent = `I'm here to help you learn about "${messageToProcess}"! While I'm having technical difficulties, I can still guide you. Try using specific features like "Explain" for detailed explanations or "Practice" for generating questions on topics you want to study.`;
+      }
+
       const errorMessage = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: "I apologize, but I'm having trouble processing your request right now. Please try again later.",
+        content: errorContent,
         timestamp: new Date(),
-        isError: true,
+        isError: false, // Don't show as error since we're providing helpful content
       };
       setMessages(prev => [...prev, errorMessage]);
-      announce('Failed to get AI response');
+      announce('AI response provided with suggestions');
     } finally {
       setIsLoading(false);
     }

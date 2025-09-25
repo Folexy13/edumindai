@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccessibility } from '../../contexts/AccessibilityContext';
 import LoadingSpinner from '../UI/LoadingSpinner';
@@ -19,12 +19,9 @@ const StudentDashboard = ({ user }) => {
   const [stats, setStats] = useState(null);
   const [recentCourses, setRecentCourses] = useState([]);
   const [achievements, setAchievements] = useState([]);
+  const [announced, setAnnounced] = useState(false);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       const [statsResponse, coursesResponse, achievementsResponse] = await Promise.all([
         api.gamification.getProgress(),
@@ -36,10 +33,16 @@ const StudentDashboard = ({ user }) => {
       setRecentCourses(coursesResponse.data.courses?.slice(0, 3) || []);
       setAchievements(achievementsResponse.data.earned?.slice(0, 3) || []);
       
-      announce('Student dashboard loaded successfully');
+      if (!announced) {
+        announce('Student dashboard loaded successfully');
+        setAnnounced(true);
+      }
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-      announce('Failed to load some dashboard data, but you can still navigate the platform');
+      if (!announced) {
+        announce('Dashboard loaded with limited data, but you can still navigate the platform');
+        setAnnounced(true);
+      }
       
       // Set fallback data so the dashboard still renders
       setStats({
@@ -55,7 +58,11 @@ const StudentDashboard = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [announce, announced]);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
 
   if (loading) {
     return <LoadingSpinner />;
