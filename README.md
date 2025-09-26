@@ -303,7 +303,7 @@ EduMind-AI/
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/EduMind-AI.git
+git clone https://github.com/folexy13/edumind ai.git
 cd EduMind-AI
 
 # Configure environment variables
