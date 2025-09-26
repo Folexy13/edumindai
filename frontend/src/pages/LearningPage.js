@@ -96,7 +96,11 @@ const LearningPage = () => {
 
   const startQuiz = async () => {
     try {
-      const response = await api.ai.generateQuestions(currentLesson.title);
+      const response = await api.ai.generateQuestions({
+        topic: currentLesson.title,
+        count: 5,
+        difficulty: 'intermediate'
+      });
       setQuizData(response.data);
       setShowQuiz(true);
       announce("Quiz started");

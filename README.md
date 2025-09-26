@@ -1,9 +1,9 @@
 # EduMind AI - Intelligent Learning Platform
 
 ## � Project Demo
-[![Demo Video](https://img.shields.io/badge/▶️-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/9Hu8nTc6r0M)
+[![Demo Video](https://img.shields.io/badge/▶️-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://vimeo.com/1122104598?share=copy)
 
-**[🔗 View Project Demo](https://youtu.be/9Hu8nTc6r0M)**
+**[🔗 View Project Demo](https://vimeo.com/1122104598?share=copy)**
 
 ---
 
